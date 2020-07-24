@@ -44,16 +44,16 @@ func SetInterfaceInNamespacePid(name string, nsPid int) error {
 	return netlink.NetworkSetNsPid(iface, nsPid)
 }
 
-func SetInterfaceMaster(name, master string) error {
+func SetInterfaceMain(name, main string) error {
 	iface, err := net.InterfaceByName(name)
 	if err != nil {
 		return err
 	}
-	masterIface, err := net.InterfaceByName(master)
+	mainIface, err := net.InterfaceByName(main)
 	if err != nil {
 		return err
 	}
-	return netlink.AddToBridge(iface, masterIface)
+	return netlink.AddToBridge(iface, mainIface)
 }
 
 func SetDefaultGateway(ip, ifaceName string) error {

@@ -29,7 +29,7 @@ type Config struct {
 	// provided in Env are provided to the process
 	Env []string `json:"environment,omitempty"`
 
-	// Tty when true will allocate a pty slave on the host for access by the container's process
+	// Tty when true will allocate a pty subordinate on the host for access by the container's process
 	// and ensure that it is mounted inside the container's rootfs
 	Tty bool `json:"tty,omitempty"`
 

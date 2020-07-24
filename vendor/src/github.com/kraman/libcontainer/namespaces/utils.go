@@ -93,16 +93,16 @@ func setupUser(container *libcontainer.Container) error {
 	return nil
 }
 
-func getMasterAndConsole(container *libcontainer.Container) (string, *os.File, error) {
-	master, err := openpmtx()
+func getMainAndConsole(container *libcontainer.Container) (string, *os.File, error) {
+	main, err := openpmtx()
 	if err != nil {
 		return "", nil, err
 	}
 
-	console, err := ptsname(master)
+	console, err := ptsname(main)
 	if err != nil {
-		master.Close()
+		main.Close()
 		return "", nil, err
 	}
-	return console, master, nil
+	return console, main, nil
 }

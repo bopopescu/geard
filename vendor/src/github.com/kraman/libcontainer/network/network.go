@@ -55,16 +55,16 @@ func SetInterfaceInNamespaceFd(name string, fd int) error {
 	return netlink.NetworkSetNsFd(iface, fd)
 }
 
-func SetInterfaceMaster(name, master string) error {
+func SetInterfaceMain(name, main string) error {
 	iface, err := net.InterfaceByName(name)
 	if err != nil {
 		return err
 	}
-	masterIface, err := net.InterfaceByName(master)
+	mainIface, err := net.InterfaceByName(main)
 	if err != nil {
 		return err
 	}
-	return netlink.NetworkSetMaster(iface, masterIface)
+	return netlink.NetworkSetMain(iface, mainIface)
 }
 
 func SetDefaultGateway(ip string) error {

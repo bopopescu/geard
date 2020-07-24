@@ -14,7 +14,7 @@ var (
 
 func SetupNewMountNamespace(rootfs string, readonly bool) error {
 	if err := mount("", "/", "", syscall.MS_SLAVE|syscall.MS_REC, ""); err != nil {
-		return fmt.Errorf("mounting / as slave %s", err)
+		return fmt.Errorf("mounting / as subordinate %s", err)
 	}
 
 	if err := mount(rootfs, rootfs, "bind", syscall.MS_BIND|syscall.MS_REC, ""); err != nil {

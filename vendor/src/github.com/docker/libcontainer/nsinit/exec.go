@@ -50,7 +50,7 @@ func execAction(context *cli.Context) {
 
 func runIn(container *libcontainer.Config, state *libcontainer.State, args []string) (int, error) {
 	var (
-		master  *os.File
+		main  *os.File
 		console string
 		err     error
 
@@ -67,13 +67,13 @@ func runIn(container *libcontainer.Config, state *libcontainer.State, args []str
 		stdout = nil
 		stderr = nil
 
-		master, console, err = consolepkg.CreateMasterAndConsole()
+		main, console, err = consolepkg.CreateMainAndConsole()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		go io.Copy(master, os.Stdin)
-		go io.Copy(os.Stdout, master)
+		go io.Copy(main, os.Stdin)
+		go io.Copy(os.Stdout, main)
 
 		state, err := term.SetRawTerminal(os.Stdin.Fd())
 		if err != nil {
@@ -85,12 +85,12 @@ func runIn(container *libcontainer.Config, state *libcontainer.State, args []str
 
 	startCallback := func(cmd *exec.Cmd) {
 		go func() {
-			resizeTty(master)
+			resizeTty(main)
 
 			for sig := range sigc {
 				switch sig {
 				case syscall.SIGWINCH:
-					resizeTty(master)
+					resizeTty(main)
 				default:
 					cmd.Process.Signal(sig)
 				}
@@ -122,7 +122,7 @@ func startContainer(container *libcontainer.Config, dataPath string, args []stri
 	}
 
 	var (
-		master  *os.File
+		main  *os.File
 		console string
 		err     error
 
@@ -136,13 +136,13 @@ func startContainer(container *libcontainer.Config, dataPath string, args []stri
 		stdout = nil
 		stderr = nil
 
-		master, console, err = consolepkg.CreateMasterAndConsole()
+		main, console, err = consolepkg.CreateMainAndConsole()
 		if err != nil {
 			return -1, err
 		}
 
-		go io.Copy(master, os.Stdin)
-		go io.Copy(os.Stdout, master)
+		go io.Copy(main, os.Stdin)
+		go io.Copy(os.Stdout, main)
 
 		state, err := term.SetRawTerminal(os.Stdin.Fd())
 		if err != nil {
@@ -154,12 +154,12 @@ func startContainer(container *libcontainer.Config, dataPath string, args []stri
 
 	startCallback := func() {
 		go func() {
-			resizeTty(master)
+			resizeTty(main)
 
 			for sig := range sigc {
 				switch sig {
 				case syscall.SIGWINCH:
-					resizeTty(master)
+					resizeTty(main)
 				default:
 					cmd.Process.Signal(sig)
 				}
@@ -170,8 +170,8 @@ func startContainer(container *libcontainer.Config, dataPath string, args []stri
 	return namespaces.Exec(container, stdin, stdout, stderr, console, "", dataPath, args, createCommand, startCallback)
 }
 
-func resizeTty(master *os.File) {
-	if master == nil {
+func resizeTty(main *os.File) {
+	if main == nil {
 		return
 	}
 
@@ -180,7 +180,7 @@ func resizeTty(master *os.File) {
 		return
 	}
 
-	if err := term.SetWinsize(master.Fd(), ws); err != nil {
+	if err := term.SetWinsize(main.Fd(), ws); err != nil {
 		return
 	}
 }

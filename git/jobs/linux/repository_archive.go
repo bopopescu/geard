@@ -32,7 +32,7 @@ func writeGitRepositoryArchive(w io.Writer, path string, ref GitCommitRef) error
 	var cmd *exec.Cmd
 	// TODO: Stream as tar with gzip
 	if ref == EmptyGitCommitRef {
-		cmd = exec.Command("/usr/bin/git", "archive", "--format", "zip", "master")
+		cmd = exec.Command("/usr/bin/git", "archive", "--format", "zip", "main")
 	} else {
 		cmd = exec.Command("/usr/bin/git", "archive", "--format", "zip", string(ref))
 	}
